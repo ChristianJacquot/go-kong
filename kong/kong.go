@@ -36,6 +36,19 @@ type AbstractConsumerService interface {
 	ListAll(ctx context.Context) ([]*Consumer, error)
 }
 
+type AbstractPluginService interface {
+	Create(ctx context.Context, plugin *Plugin) (*Plugin, error)
+	Get(ctx context.Context, usernameOrID *string) (*Plugin, error)
+	Update(ctx context.Context, plugin *Plugin) (*Plugin, error)
+	Delete(ctx context.Context, usernameOrID *string) error
+	List(ctx context.Context, opt *ListOpt) ([]*Plugin, *ListOpt, error)
+	ListAll(ctx context.Context) ([]*Plugin, error)
+	ListAllForConsumer(ctx context.Context, consumerIDorName *string) ([]*Plugin, error)
+	ListAllForService(ctx context.Context, serviceIDorName *string) ([]*Plugin, error)
+	ListAllForRoute(ctx context.Context, routeID *string) ([]*Plugin, error)
+	Validate(ctx context.Context, plugin *Plugin) (bool, error)
+}
+
 // Client talks to the Admin API or control plane of a
 // Kong cluster
 type Client struct {
@@ -47,7 +60,7 @@ type Client struct {
 	Routes                  *RouteService
 	CACertificates          *CACertificateService
 	Certificates            *CertificateService
-	Plugins                 *PluginService
+	Plugins                 AbstractPluginService
 	SNIs                    *SNIService
 	Upstreams               *UpstreamService
 	UpstreamNodeHealth      *UpstreamNodeHealthService

@@ -99,6 +99,23 @@ func (s *PluginService) Delete(ctx context.Context,
 	return err
 }
 
+// Validate validates a Plugin against its schema
+func (s *PluginService) Validate(ctx context.Context, plugin *Plugin) (bool, error) {
+	endpoint := "/schemas/plugins/validate"
+	req, err := s.client.NewRequest("POST", endpoint, nil, &plugin)
+	if err != nil {
+		return false, err
+	}
+	resp, err := s.client.Do(ctx, req, nil)
+	if err != nil {
+		return false, err
+	} else if resp.StatusCode == 201 {
+		return true, nil
+	} else {
+		return false, nil
+	}
+}
+
 // listByPath fetches a list of Plugins in Kong
 // on a specific path.
 // This is a helper method for listing all plugins
